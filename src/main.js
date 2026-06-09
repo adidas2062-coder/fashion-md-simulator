@@ -17,7 +17,7 @@ async function connectToBackend() {
   
   // 1. 모니터링 데이터
   try {
-    const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-monitor/main/data/json/monitoring.json?_t=' + Date.now());
+    const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-md-simulator/main/data/json/monitoring.json?_t=' + Date.now());
     if (res.ok) {
       const json = await res.json();
       const w = json.data.weather;
@@ -84,7 +84,7 @@ async function connectToBackend() {
 
   // 2. 세일즈 데이터
   try {
-    const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-monitor/main/data/json/sales.json?_t=' + Date.now());
+    const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-md-simulator/main/data/json/sales.json?_t=' + Date.now());
     if (res.ok) {
       const json = await res.json();
       // KPI 업데이트
@@ -164,7 +164,7 @@ async function connectToBackend() {
 
   // 3. 기획전(이벤트) 데이터
   try {
-    const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-monitor/main/data/json/events.json?_t=' + Date.now());
+    const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-md-simulator/main/data/json/events.json?_t=' + Date.now());
     if (res.ok) {
       const json = await res.json();
       const events = json.data;
