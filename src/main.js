@@ -87,6 +87,8 @@ async function connectToBackend() {
     const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-md-simulator/main/data/json/sales.json?_t=' + Date.now());
     if (res.ok) {
       const json = await res.json();
+      const sum = json.data.summary;
+      
       // KPI 업데이트
       const fmt = (n) => Number(n).toLocaleString('ko-KR');
       
