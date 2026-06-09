@@ -17,7 +17,7 @@ async function connectToBackend() {
   
   // 1. 모니터링 데이터
   try {
-    const res = await fetch('http://localhost:8080/api/monitoring');
+    const res = await fetch('http://localhost:8080/api/monitoring?_t=' + Date.now());
     if (res.ok) {
       const json = await res.json();
       const w = json.data.weather;
@@ -39,32 +39,123 @@ async function connectToBackend() {
           sigContainer.appendChild(badge);
         }
       }
+      
+      // 타이밍 시그널 업데이트
+      const signalListContainer = document.getElementById('timing-signals-container');
+      if (signalListContainer && json.data.signals) {
+        signalListContainer.innerHTML = '';
+        if (json.data.signals.length === 0) {
+          signalListContainer.innerHTML = '<div style="color:#aaa; font-size:0.9rem; padding:10px;">현재 감지된 기획전 시그널이 없습니다.</div>';
+        } else {
+          json.data.signals.slice(0,3).forEach(sig => {
+            signalListContainer.innerHTML += `
+              <div class="signal-item">
+                <div class="signal-header">
+                  <span class="signal-name">🟢 ${sig.theme || '기획전'}</span>
+                  <span class="score">${sig.score || 0}점</span>
+                </div>
+                <div class="signal-meta">${sig.reason || ''}</div>
+              </div>`;
+          });
+        }
+      }
+
+      // 무신사 실시간 랭킹 업데이트
+      const rankingListContainer = document.getElementById('realtime-ranking-container');
+      if (rankingListContainer && json.data.rankings && json.data.rankings.tops) {
+        rankingListContainer.innerHTML = '';
+        json.data.rankings.tops.slice(0, 5).forEach(item => {
+          rankingListContainer.innerHTML += `
+            <li>
+              <span class="rank">${item.rank}</span> 
+              <span class="badge" style="background:rgba(255,255,255,0.1); border-radius:4px; padding:2px 6px; font-size:10px;">${item.rank_change || '-'}</span> 
+              [${item.brand}] ${item.product_name}
+            </li>`;
+        });
+      }
+
       console.log("✅ 모니터링 데이터 바인딩 완료");
+    } else {
+      console.error("모니터링 API 에러 응답:", res.status);
     }
   } catch (e) {
-    console.warn("모니터링 API 호출 실패", e);
+    console.error("모니터링 API 호출 실패", e);
   }
 
   // 2. 세일즈 데이터
   try {
-    const res = await fetch('http://localhost:8080/api/sales');
+    const res = await fetch('http://localhost:8080/api/sales?_t=' + Date.now());
     if (res.ok) {
       const json = await res.json();
-      const sum = json.data.summary;
+      // KPI 업데이트
       const fmt = (n) => Number(n).toLocaleString('ko-KR');
       
-      // KPI 업데이트
-      const values = document.querySelectorAll('.kpi-card .value');
-      const trends = document.querySelectorAll('.kpi-card .trend');
-      
-      if(values.length >= 4) {
-        values[0].textContent = `₩${fmt(sum.today_revenue)}`;
-        trends[0].textContent = `${sum.revenue_change_pct > 0 ? '+' : ''}${sum.revenue_change_pct}% vs 어제`;
-        trends[0].className = `trend ${sum.revenue_change_pct > 0 ? 'up' : 'down'}`;
-        
-        values[1].textContent = `${fmt(sum.today_orders)}`;
-        values[3].textContent = `₩${fmt(sum.avg_order_value)}`;
+      const elRev = document.getElementById('kpi-revenue');
+      const elRevTrend = document.getElementById('kpi-revenue-trend');
+      const elOrders = document.getElementById('kpi-orders');
+      const elAov = document.getElementById('kpi-aov');
+
+      if(elRev) elRev.textContent = `₩${fmt(sum.today_revenue)}`;
+      if(elRevTrend) {
+        elRevTrend.textContent = `${sum.revenue_change_pct > 0 ? '+' : ''}${sum.revenue_change_pct}% vs 어제`;
+        elRevTrend.className = `trend ${sum.revenue_change_pct > 0 ? 'up' : 'down'}`;
       }
+      if(elOrders) elOrders.textContent = `${fmt(sum.today_orders)}`;
+      if(elAov) elAov.textContent = `₩${fmt(sum.avg_order_value)}`;
+      
+      // 매출 상세 테이블 (최근 14일 역순)
+      const tableBody = document.querySelector('#sales-detail-table tbody');
+      if (tableBody && json.data.daily) {
+        tableBody.innerHTML = '';
+        const recentRows = [...json.data.daily].slice(-14).reverse();
+        recentRows.forEach(row => {
+          tableBody.innerHTML += `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <td style="padding: 10px;">${row.date}</td>
+              <td style="padding: 10px; font-weight:600; color:#fff;">₩${fmt(row.revenue)}</td>
+              <td style="padding: 10px;">${fmt(row.orders)}건</td>
+              <td style="padding: 10px;">₩${fmt(row.avg_order_value)}</td>
+              <td style="padding: 10px; color:${row.return_rate > 5 ? '#f87171' : '#34d399'};">${row.return_rate}%</td>
+            </tr>
+          `;
+        });
+      }
+      
+      // 매출 현황 차트 렌더링
+      const ctx = document.getElementById('salesChart');
+      if (ctx && json.data.daily) {
+        const dailyData = json.data.daily.slice(-14); // 최근 14일
+        const labels = dailyData.map(d => d.date.substring(5)); // MM-DD
+        const revenues = dailyData.map(d => d.revenue);
+        
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: '일별 매출(원)',
+              data: revenues,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              tension: 0.4,
+              borderWidth: 2,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: '#9ca3af' } }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } }
+            }
+          }
+        });
+      }
+
       console.log("✅ 세일즈 데이터 바인딩 완료");
     }
   } catch (e) {
@@ -73,19 +164,52 @@ async function connectToBackend() {
 
   // 3. 기획전(이벤트) 데이터
   try {
-    const res = await fetch('http://localhost:8080/api/events');
+    const res = await fetch('http://localhost:8080/api/events?_t=' + Date.now());
     if (res.ok) {
       const json = await res.json();
       const events = json.data;
       
+      // KPI: 프로모션 수 업데이트
+      const kpiPromo = document.getElementById('kpi-promo');
+      if (kpiPromo) kpiPromo.textContent = json.count || events.length;
+
+      // 행사 일정 리스트 업데이트
       const listContainer = document.querySelector('#sales-schedule .ranking-list');
       if(listContainer && events.length > 0) {
         listContainer.innerHTML = '';
         events.slice(0, 5).forEach(ev => {
           const li = document.createElement('li');
           const platformTag = ev.platform === '29cm' ? '<strong style="color:var(--cm-accent)">[29CM]</strong>' : '<strong style="color:var(--ms-accent)">[무신사]</strong>';
-          li.innerHTML = `${platformTag} ${ev.title} (${ev.period})`;
+          li.innerHTML = `${platformTag} ${ev.title} <span style="font-size:0.85rem; color:#aaa; margin-left:10px;">(${ev.period})</span>`;
           listContainer.appendChild(li);
+        });
+      }
+
+      // 행사 상세 카드 업데이트 (동적)
+      const infoContainer = document.getElementById('event-info-container');
+      if (infoContainer && events.length > 0) {
+        infoContainer.innerHTML = '';
+        events.slice(0, 4).forEach(ev => {
+          let itemsHtml = '';
+          if (ev.top_items && ev.top_items.length > 0) {
+            itemsHtml = '<ul style="margin-top:10px; padding-left:20px; font-size:0.85rem; color:#ccc;">';
+            ev.top_items.slice(0, 2).forEach(item => {
+              itemsHtml += `<li>[${item.brand}] ${item.product_name} (${item.discount_rate}%↓)</li>`;
+            });
+            itemsHtml += '</ul>';
+          }
+
+          infoContainer.innerHTML += `
+            <div class="card glass-card">
+              <div class="card-title" style="font-size:1rem;">${ev.title}</div>
+              <p style="color:#aaa; font-size:0.9rem; line-height:1.5;">
+                <strong>플랫폼:</strong> ${ev.platform === '29cm' ? '<span style="color:var(--cm-accent)">29CM</span>' : '<span style="color:var(--ms-accent)">무신사</span>'}<br>
+                <strong>기간:</strong> ${ev.period}<br>
+                <strong>참여 상품수:</strong> ${ev.item_count}종
+              </p>
+              ${itemsHtml}
+            </div>
+          `;
         });
       }
       console.log("✅ 기획전 데이터 바인딩 완료");

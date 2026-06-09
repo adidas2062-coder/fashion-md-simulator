@@ -65,7 +65,7 @@
           <!-- 타이밍 시그널 카드 -->
           <div class="card glass-card" style="grid-column: span 2;">
             <div class="card-title">🎯 기획전 타이밍 시그널</div>
-            <div class="signal-list">
+            <div class="signal-list" id="timing-signals-container">
               <div class="signal-item">
                 <div class="signal-header">
                   <span class="signal-name">🟢 트렌디 슬랙스 기획전</span>
@@ -94,7 +94,7 @@
           <!-- 랭킹 -->
           <div class="card glass-card">
             <div class="card-title">🏆 무신사 실시간 랭킹 (남성/상의)</div>
-            <ul class="ranking-list">
+            <ul class="ranking-list" id="realtime-ranking-container">
               <li><span class="rank">1</span> <span class="badge new">NEW</span> [크롭] 롤업 반팔 티셔츠 (키뮤어)</li>
               <li><span class="rank">2</span> <span class="badge new">NEW</span> 쿨 하프 니트 (수아레)</li>
               <li><span class="rank">3</span> <span class="badge up">▲4</span> 베이직 스탠다드 셔츠 (무신사 스탠다드)</li>
@@ -122,23 +122,23 @@
           <div class="kpi-grid">
             <div class="card glass-card kpi-card">
               <span class="label">일간 총 매출</span>
-              <span class="value">$12,450</span>
-              <span class="trend up">+14.5% vs 어제</span>
+              <span class="value" id="kpi-revenue">-</span>
+              <span class="trend" id="kpi-revenue-trend">-</span>
             </div>
             <div class="card glass-card kpi-card">
-              <span class="label">주간 누적 주문건수</span>
-              <span class="value">1,204</span>
-              <span class="trend up">+5.2% vs 지난주</span>
+              <span class="label">일간 주문건수</span>
+              <span class="value" id="kpi-orders">-</span>
+              <span class="trend neutral">오늘 기준</span>
             </div>
             <div class="card glass-card kpi-card">
               <span class="label">활성 프로모션 수</span>
-              <span class="value">3</span>
-              <span class="trend neutral">유지</span>
+              <span class="value" id="kpi-promo">-</span>
+              <span class="trend neutral">진행 중</span>
             </div>
             <div class="card glass-card kpi-card">
               <span class="label">평균 객단가</span>
-              <span class="value">$84.2</span>
-              <span class="trend down">-2.1% vs 어제</span>
+              <span class="value" id="kpi-aov">-</span>
+              <span class="trend neutral">오늘 기준</span>
             </div>
           </div>
         </div>
@@ -146,8 +146,28 @@
         <div id="sales-status" class="sub-tab-content">
           <div class="card glass-card">
             <div class="card-title">플랫폼별 주간 매출 추이</div>
-            <div style="height: 300px; width: 100%; display: flex; align-items: center; justify-content: center; color: #888;">
-              (Claude Code가 파이썬 백엔드를 연동하면 여기에 Chart.js 실제 매출 데이터가 그려집니다)
+            <div style="height: 250px; width: 100%; display: flex; align-items: center; justify-content: center;">
+              <canvas id="salesChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="card glass-card" style="margin-top: 1.5rem;">
+            <div class="card-title">상세 매출 데이터 (최근 14일)</div>
+            <div class="table-container" style="overflow-x: auto;">
+              <table class="data-table" id="sales-detail-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <th style="padding: 10px; color: #9ca3af;">일자</th>
+                    <th style="padding: 10px; color: #9ca3af;">매출(원)</th>
+                    <th style="padding: 10px; color: #9ca3af;">주문건수</th>
+                    <th style="padding: 10px; color: #9ca3af;">평균 객단가</th>
+                    <th style="padding: 10px; color: #9ca3af;">반품률(%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- JS에서 삽입 -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -163,11 +183,8 @@
         </div>
 
         <div id="sales-info" class="sub-tab-content">
-          <div class="dashboard-grid">
-            <div class="card glass-card">
-              <div class="card-title">여름 린넨 셋업 한정특가 상세</div>
-              <p style="color:#aaa; font-size:0.9rem; line-height:1.5;">플랫폼: 무신사<br>참여상품: 12종<br>마진분담: 브랜드 50% / 무신사 50%<br>목표매출: 5,000만원</p>
-            </div>
+          <div class="dashboard-grid" id="event-info-container">
+            <!-- JS에서 동적으로 기획전 상세 정보 삽입 -->
           </div>
         </div>
       </div>
@@ -317,6 +334,6 @@
     </main>
   </div>
   
-  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="./src/main.js?v=2"></script>
 </body>
 </html>
