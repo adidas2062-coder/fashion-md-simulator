@@ -6,7 +6,94 @@ document.addEventListener('DOMContentLoaded', () => {
   initCalculator();
   initBannerSimulator();
   initMockChart();
+  
+  // 클로드코드가 띄울 FastAPI 백엔드 연동 시작
+  connectToBackend();
 });
+
+// --- API Integration (Claude Code Backend) ---
+async function connectToBackend() {
+  console.log("백엔드(8080 포트) 연결 시도 중...");
+  
+  // 1. 모니터링 데이터
+  try {
+    const res = await fetch('http://localhost:8080/api/monitoring');
+    if (res.ok) {
+      const json = await res.json();
+      const w = json.data.weather;
+      
+      // 날씨 업데이트
+      const tempEl = document.querySelector('.weather-info .temp');
+      const descEl = document.querySelector('.weather-info .weather-desc');
+      if(tempEl) tempEl.textContent = `${w.current_temp}°C`;
+      if(descEl) descEl.textContent = `체감 ${w.apparent_temp}°C / ${w.weather_label} / 최고 ${w.temp_max}°C`;
+      
+      // 수요 시그널 업데이트
+      const sigContainer = document.querySelector('.demand-signal');
+      if(sigContainer && w.category_signal) {
+        sigContainer.innerHTML = '<span>수요 시그널:</span>';
+        for (const [cat, sig] of Object.entries(w.category_signal)) {
+          const badge = document.createElement('span');
+          badge.className = sig.includes('↑') ? 'badge accent' : 'badge';
+          badge.textContent = `${cat}: ${sig}`;
+          sigContainer.appendChild(badge);
+        }
+      }
+      console.log("✅ 모니터링 데이터 바인딩 완료");
+    }
+  } catch (e) {
+    console.warn("모니터링 API 호출 실패", e);
+  }
+
+  // 2. 세일즈 데이터
+  try {
+    const res = await fetch('http://localhost:8080/api/sales');
+    if (res.ok) {
+      const json = await res.json();
+      const sum = json.data.summary;
+      const fmt = (n) => Number(n).toLocaleString('ko-KR');
+      
+      // KPI 업데이트
+      const values = document.querySelectorAll('.kpi-card .value');
+      const trends = document.querySelectorAll('.kpi-card .trend');
+      
+      if(values.length >= 4) {
+        values[0].textContent = `₩${fmt(sum.today_revenue)}`;
+        trends[0].textContent = `${sum.revenue_change_pct > 0 ? '+' : ''}${sum.revenue_change_pct}% vs 어제`;
+        trends[0].className = `trend ${sum.revenue_change_pct > 0 ? 'up' : 'down'}`;
+        
+        values[1].textContent = `${fmt(sum.today_orders)}`;
+        values[3].textContent = `₩${fmt(sum.avg_order_value)}`;
+      }
+      console.log("✅ 세일즈 데이터 바인딩 완료");
+    }
+  } catch (e) {
+    console.warn("세일즈 API 호출 실패", e);
+  }
+
+  // 3. 기획전(이벤트) 데이터
+  try {
+    const res = await fetch('http://localhost:8080/api/events');
+    if (res.ok) {
+      const json = await res.json();
+      const events = json.data;
+      
+      const listContainer = document.querySelector('#sales-schedule .ranking-list');
+      if(listContainer && events.length > 0) {
+        listContainer.innerHTML = '';
+        events.slice(0, 5).forEach(ev => {
+          const li = document.createElement('li');
+          const platformTag = ev.platform === '29cm' ? '<strong style="color:var(--cm-accent)">[29CM]</strong>' : '<strong style="color:var(--ms-accent)">[무신사]</strong>';
+          li.innerHTML = `${platformTag} ${ev.title} (${ev.period})`;
+          listContainer.appendChild(li);
+        });
+      }
+      console.log("✅ 기획전 데이터 바인딩 완료");
+    }
+  } catch (e) {
+    console.warn("이벤트 API 호출 실패", e);
+  }
+}
 
 // --- Navigation Logic (Main Tabs) ---
 function initNavigation() {
