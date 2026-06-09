@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>패션 MD 마진 계산기 & 모바일 배너 시뮬레이터</title>
+  <title>Next-Gen Fashion MD Command Center</title>
   <link rel="stylesheet" href="./src/style.css">
   <!-- Chart.js CDN 로드 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,416 +13,305 @@
     <!-- 1. 좌측 사이드바 네비게이션 -->
     <nav class="sidebar">
       <div class="brand-title">
-        <h1>FASHION MD</h1>
-        <span>PRO TOOLKIT</span>
+        <h1>MD COMMAND</h1>
+        <span>CENTER SUITE</span>
       </div>
       
       <ul class="nav-menu">
-        <li class="nav-item active" data-tab="margin-calculator-tab">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="15" y2="17"></line><line x1="12" y1="9" x2="12" y2="17"></line></svg>
-          마진 & 프로모션 계산기
+        <li class="nav-item active" data-tab="tab-monitoring">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          마켓 모니터링
         </li>
-        <li class="nav-item" data-tab="banner-simulator-tab">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-          모바일 배너 시뮬레이터
+        <li class="nav-item" data-tab="tab-sales">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          세일즈 & 프로모션
+        </li>
+        <li class="nav-item" data-tab="tab-simulator">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="15" y2="17"></line><line x1="12" y1="9" x2="12" y2="17"></line></svg>
+          마진 & 시뮬레이터
         </li>
       </ul>
       
       <div class="sidebar-footer">
-        Antigravity MD Suite v1.0
+        Antigravity MD Suite v2.0
       </div>
     </nav>
 
     <!-- 2. 메인 콘텐츠 영역 -->
     <main class="main-content">
       
-      <!-- ================= 탭 1: 마진 계산기 워크스페이스 ================= -->
-      <div id="margin-calculator-tab" class="tab-content active" style="display: flex; width: 100%; height: 100%;">
-        
-        <!-- 왼쪽 입력 패널 -->
-        <section class="workspace-panel">
-          <div class="panel-header">
-            <h2>마진 및 프로모션 시뮬레이션</h2>
-            <p>상품 가격 구조와 플랫폼별 프로모션 할인율에 따른 마진 변화를 실시간으로 예측합니다.</p>
-          </div>
+      <!-- ================= 탭 1: 마켓 모니터링 ================= -->
+      <div id="tab-monitoring" class="tab-content active">
+        <header class="page-header">
+          <h2>마켓 모니터링 대시보드</h2>
+          <p>실시간 플랫폼 랭킹 및 키워드 트렌드, 기획전 타이밍 시그널을 확인하세요.</p>
+        </header>
 
-          <!-- 플랫폼 선택기 -->
-          <div class="platform-selector">
-            <button class="platform-btn active" data-platform="musinsa">
-              <span>무신사 (MUSINSA)</span>
-            </button>
-            <button class="platform-btn" data-platform="29cm">
-              <span>29CM (이십구센티미터)</span>
-            </button>
-          </div>
-
-          <!-- 기본 상품 정보 입력 -->
-          <div class="card">
-            <div class="card-title">기본 상품 정보</div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="prod-brand">브랜드명</label>
-                <input type="text" id="prod-brand" value="ADIDAS CODER" placeholder="브랜드명 입력">
-              </div>
-              <div class="form-group">
-                <label for="prod-name">상품명</label>
-                <input type="text" id="prod-name" value="미니멀 린넨 셋업 셔츠" placeholder="상품명 입력">
-              </div>
-              <div class="form-group">
-                <label for="retail-price">소비자가 (정가)</label>
-                <input type="number" id="retail-price" value="89000" min="0" step="1000">
-              </div>
-              <div class="form-group">
-                <label for="cost-price">제조원가 (원단/공임)</label>
-                <input type="number" id="cost-price" value="26000" min="0" step="100">
-              </div>
+        <div class="dashboard-grid">
+          <!-- 날씨 카드 -->
+          <div class="card glass-card">
+            <div class="card-title">🌤 오늘의 날씨 & 수요 예측</div>
+            <div class="weather-info">
+              <div class="temp">18.8°C</div>
+              <div class="weather-desc">체감 19.9°C / 맑음 / 최고 26.6°C</div>
+            </div>
+            <div class="demand-signal">
+              <span>수요 시그널:</span>
+              <span class="badge">상의 (반소매)</span>
+              <span class="badge accent">가벼운 아우터 ↑</span>
             </div>
           </div>
 
-          <!-- 자체 브랜드 할인 및 수수료 설정 -->
-          <div class="card">
-            <div class="card-title">기본 수수료 및 자체 할인</div>
-            
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="direct-discount">브랜드 자체 판매 할인율</label>
-                <span class="slider-val" id="direct-discount-val">10%</span>
-              </div>
-              <input type="range" id="direct-discount" min="0" max="80" value="10">
-            </div>
-
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="comm-rate">플랫폼 기본 수수료율 (VAT 포함)</label>
-                <span class="slider-val" id="comm-rate-val">28%</span>
-              </div>
-              <input type="range" id="comm-rate" min="10" max="45" value="28">
-            </div>
-          </div>
-
-          <!-- 플랫폼 프로모션 (쿠폰/등급할인) 분담비율 -->
-          <div class="card">
-            <div class="card-title">플랫폼 프로모션 분담 설정</div>
-            
-            <!-- 쿠폰 설정 -->
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="coupon-rate">무신사/29CM 발행 쿠폰 할인율</label>
-                <span class="slider-val" id="coupon-rate-val">10%</span>
-              </div>
-              <input type="range" id="coupon-rate" min="0" max="30" value="10">
-            </div>
-
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="coupon-share">브랜드의 쿠폰 할인액 분담율</label>
-                <span class="slider-val" id="coupon-share-val">50%</span>
-              </div>
-              <input type="range" id="coupon-share" min="0" max="100" value="50">
-            </div>
-
-            <!-- 무신사 전용 추가 설정 (29CM 선택시 비활성화) -->
-            <div id="musinsa-only-fields">
-              <div class="slider-group">
-                <div class="slider-header">
-                  <label for="member-discount">무신사 회원 등급 할인율 (평균)</label>
-                  <span class="slider-val" id="member-discount-val">5%</span>
+          <!-- 타이밍 시그널 카드 -->
+          <div class="card glass-card" style="grid-column: span 2;">
+            <div class="card-title">🎯 기획전 타이밍 시그널</div>
+            <div class="signal-list">
+              <div class="signal-item">
+                <div class="signal-header">
+                  <span class="signal-name">🟢 트렌디 슬랙스 기획전</span>
+                  <span class="score">40점</span>
                 </div>
-                <input type="range" id="member-discount" min="0" max="10" value="5">
+                <div class="signal-meta">트렌드 +29% | 권장 오픈일: 07/07까지</div>
               </div>
-
-              <div class="slider-group">
-                <div class="slider-header">
-                  <label for="member-share">브랜드의 회원 할인 분담율</label>
-                  <span class="slider-val" id="member-share-val">50%</span>
+              <div class="signal-item">
+                <div class="signal-header">
+                  <span class="signal-name">🟢 후드 & 스웨트 기획전</span>
+                  <span class="score">40점</span>
                 </div>
-                <input type="range" id="member-share" min="0" max="100" value="50">
-              </div>
-
-              <div class="slider-group" style="display:none;"> <!-- Hidden for simplicity, standard is 1% points -->
-                <input type="range" id="point-rate" min="0" max="5" value="1">
-                <input type="range" id="point-share" min="0" max="100" value="100">
+                <div class="signal-meta">할인율 급등 (24.5%) | 작년 대비 ▲23위</div>
               </div>
             </div>
           </div>
 
-          <!-- 역산 가격 제안 박스 -->
-          <div class="card">
-            <div class="card-title">목표 마진율 달성 가격 역산</div>
-            <div class="form-grid" style="margin-bottom: 1rem;">
-              <div class="form-group" style="grid-column: span 2;">
-                <label for="target-margin-rate">목표 마진율 (판매가 대비 %)</label>
-                <input type="number" id="target-margin-rate" value="50" min="5" max="95">
-              </div>
-            </div>
-            <div class="recommend-box">
-              <div class="title" id="recommend-title">권장 판매 소비자가 (정가)</div>
-              <div class="price" id="recommend-price">112,000 원</div>
-              <div class="desc" id="recommend-desc">현재 할인 설정 및 수수료 조건 하에 목표 마진율 50%를 남기기 위한 최소 정가입니다.</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 오른쪽 프리뷰 패널 -->
-        <section class="preview-panel">
-          <div class="panel-header">
-            <h2>정산 및 마진율 분석 리포트</h2>
-            <p>프로모션 적용 후 예상 정산금 명세서 및 플랫폼별 비교 데이터입니다.</p>
-          </div>
-
-          <div class="report-grid">
-            <div class="report-card">
-              <span class="label">최종 노출 판매가</span>
-              <span class="value" id="res-selling-price">80,100 원</span>
-            </div>
-            <div class="report-card accent">
-              <span class="label">최종 정산 금액</span>
-              <span class="value" id="res-settlement-price">54,230 원</span>
-            </div>
-            <div class="report-card">
-              <span class="label">순마진액 (제조원가 제외)</span>
-              <span class="value" id="res-net-margin">28,230 원</span>
-            </div>
-            <div class="report-card">
-              <span class="label">판매가 대비 마진율</span>
-              <span class="value" id="res-margin-rate">35.2 %</span>
+          <!-- 트렌드 차트 -->
+          <div class="card glass-card" style="grid-column: span 2;">
+            <div class="card-title">📊 실시간 키워드 트렌드</div>
+            <div style="height: 250px; width: 100%; display: flex; align-items: center; justify-content: center;">
+              <canvas id="trendChartMock"></canvas>
             </div>
           </div>
 
-          <!-- 차트 시각화 카드 -->
-          <div class="card" style="width: 100%;">
-            <div class="card-title">금액 구조 시각화 (수수료 vs 브랜드 마진 vs 할인분담)</div>
-            <div style="width: 100%; height: 200px; display: flex; justify-content: center; align-items: center;">
-              <canvas id="marginChart" style="max-height: 200px;"></canvas>
-            </div>
+          <!-- 랭킹 -->
+          <div class="card glass-card">
+            <div class="card-title">🏆 무신사 실시간 랭킹 (남성/상의)</div>
+            <ul class="ranking-list">
+              <li><span class="rank">1</span> <span class="badge new">NEW</span> [크롭] 롤업 반팔 티셔츠 (키뮤어)</li>
+              <li><span class="rank">2</span> <span class="badge new">NEW</span> 쿨 하프 니트 (수아레)</li>
+              <li><span class="rank">3</span> <span class="badge up">▲4</span> 베이직 스탠다드 셔츠 (무신사 스탠다드)</li>
+              <li><span class="rank">4</span> <span class="badge down">▼1</span> 아디다스 파이어버드 트랙탑</li>
+            </ul>
           </div>
-
-          <!-- 무신사 vs 29CM 마진 비교 카드 -->
-          <div class="card" style="width: 100%;">
-            <div class="card-title">무신사 vs 29CM 마진 비교</div>
-            <div class="comparison-card">
-              <div class="report-card" style="background: rgba(255,255,255,0.01);">
-                <span class="label" style="color:#ffffff; font-weight:700;">무신사 정산금</span>
-                <span class="value" id="comp-ms-settle">54,230원</span>
-                <span class="label" style="margin-top:0.4rem;">마진율: <strong id="comp-ms-rate">35.2%</strong></span>
-              </div>
-              <div class="report-card" style="background: rgba(255,255,255,0.01); border-color: rgba(255, 90, 34, 0.15);">
-                <span class="label" style="color:var(--cm-accent); font-weight:700;">29CM 정산금</span>
-                <span class="value" id="comp-cm-settle">53,400원</span>
-                <span class="label" style="margin-top:0.4rem;">마진율: <strong id="comp-cm-rate">34.8%</strong></span>
-              </div>
-            </div>
-            <div class="comp-bar-container">
-              <div class="comp-bar-item">
-                <div class="comp-bar-label">
-                  <span>무신사 마진율</span>
-                  <span id="comp-ms-bar-label">35.2%</span>
-                </div>
-                <div class="comp-bar-bg">
-                  <div class="comp-bar-fill musinsa" id="comp-ms-bar" style="width: 35.2%;"></div>
-                </div>
-              </div>
-              <div class="comp-bar-item">
-                <div class="comp-bar-label">
-                  <span>29CM 마진율</span>
-                  <span id="comp-cm-bar-label">34.8%</span>
-                </div>
-                <div class="comp-bar-bg">
-                  <div class="comp-bar-fill cm" id="comp-cm-bar" style="width: 34.8%;"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 정산 계산 상세 테이블 -->
-          <div class="card" style="width: 100%;">
-            <div class="card-title">정산 계산 상세 명세</div>
-            <table class="detail-table">
-              <tr>
-                <td>소비자가 (정가)</td>
-                <td class="val" id="det-retail">89,000 원</td>
-              </tr>
-              <tr>
-                <td>브랜드 자체 할인액</td>
-                <td class="val negative" id="det-direct">-8,900 원</td>
-              </tr>
-              <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
-                <td>최종 판매가 (기본 노출가)</td>
-                <td class="val" id="det-selling">80,100 원</td>
-              </tr>
-              <tr>
-                <td>쿠폰 적용 할인액</td>
-                <td class="val negative" id="det-coupon">-8,010 원</td>
-              </tr>
-              <tr class="ms-detail-row">
-                <td>회원 등급 할인액</td>
-                <td class="val negative" id="det-member">-4,005 원</td>
-              </tr>
-              <tr>
-                <td>수수료 부과 수수료액</td>
-                <td class="val negative" id="det-commission">-19,064 원</td>
-              </tr>
-              <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
-                <td>브랜드 할인액 분담 차감분</td>
-                <td class="val negative" id="det-brand-share">-6,809 원</td>
-              </tr>
-              <tr style="background: rgba(255,255,255,0.02); font-weight:700;">
-                <td style="padding: 10px 5px;">최종 정산 입금액 (VAT포함)</td>
-                <td class="val" id="det-settlement" style="padding: 10px 5px; color: #60a5fa;">54,230 원</td>
-              </tr>
-              <tr>
-                <td>제조원가 (사입/생산단가)</td>
-                <td class="val negative" id="det-cost">-26,000 원</td>
-              </tr>
-              <tr style="font-weight:700; border-top: 1px solid rgba(255,255,255,0.2);">
-                <td style="padding: 10px 5px; color:#10b981;">MD 순마진액</td>
-                <td class="val" id="det-margin" style="padding: 10px 5px; color:#10b981;">28,230 원</td>
-              </tr>
-            </table>
-          </div>
-        </section>
+        </div>
       </div>
 
-      <!-- ================= 탭 2: 모바일 배너 시뮬레이터 워크스페이스 ================= -->
-      <div id="banner-simulator-tab" class="tab-content" style="display: flex; width: 100%; height: 100%;">
-        
-        <!-- 왼쪽 설정 패널 -->
-        <section class="workspace-panel">
-          <div class="panel-header">
-            <h2>모바일 기획전 배너 시뮬레이터</h2>
-            <p>플랫폼별 감성 레이아웃에 맞춰 기획전 문구와 이미지가 모바일 상에서 노출되는 모습을 기획합니다.</p>
-          </div>
-
-          <!-- 기획전 테마 플랫폼 선택 -->
-          <div class="card">
-            <div class="card-title">배너 디자인 프리셋 적용</div>
-            <div class="platform-selector">
-              <button class="platform-btn active" data-simulator-theme="musinsa">
-                <span>무신사 (스트릿/볼드)</span>
-              </button>
-              <button class="platform-btn" data-simulator-theme="29cm">
-                <span>29CM (감성/에디토리얼)</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 텍스트 내용 커스터마이징 -->
-          <div class="card">
-            <div class="card-title">기획전 광고 카피 라이팅</div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="sim-brand">브랜드 태그</label>
-                <input type="text" id="sim-brand" value="ADIDAS CODER">
-              </div>
-              <div class="form-group">
-                <label for="sim-badge">할인율 / 배지 텍스트</label>
-                <input type="text" id="sim-badge" value="UP TO 30%">
-              </div>
-              <div class="form-group full-width">
-                <label for="sim-title">메인 타이틀 (기획전명)</label>
-                <input type="text" id="sim-title" value="도심 속 가벼운 바람, 미니멀 린넨 컬렉션 단독 기획전">
-              </div>
-              <div class="form-group full-width">
-                <label for="sim-subtitle">서브 카피 (설명글)</label>
-                <input type="text" id="sim-subtitle" value="무더운 계절을 위한 통기성과 자연스러운 린넨 실루엣을 제안합니다.">
-              </div>
-            </div>
-          </div>
-
-          <!-- AI 이미지 에셋 생성 요청 -->
-          <div class="card">
-            <div class="card-title">AI 패션 화보 이미지 생성</div>
-            <div class="form-group" style="margin-bottom: 1rem;">
-              <label for="sim-prompt">화보 이미지 연출 지시문 (프롬프트)</label>
-              <input type="text" id="sim-prompt" value="Modern korean male model wearing clean minimal beige linen button up shirt, simple studio light background, high fashion photography, lookbook style" placeholder="원하는 화보 컨셉 입력">
-            </div>
-            <button id="btn-generate-image" class="ai-btn" style="width: 100%;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-              <span>AI 룩북 화보 이미지 생성하기</span>
-            </button>
-          </div>
-        </section>
-
-        <!-- 오른쪽 프리뷰 패널 -->
-        <section class="preview-panel" style="justify-content: center;">
+      <!-- ================= 탭 2: 세일즈 & 프로모션 ================= -->
+      <div id="tab-sales" class="tab-content">
+        <header class="page-header">
+          <h2>세일즈 & 프로모션 현황</h2>
           
-          <!-- 아이폰 Mockup 프레임 -->
-          <div class="phone-mockup">
-            <div class="dynamic-island"></div>
-            
-            <!-- 폰 스크린 -->
-            <div class="phone-screen theme-musinsa" id="phone-screen-target">
-              
-              <!-- 무신사 프리뷰 내부 구조 -->
-              <div id="preview-musinsa-structure" style="display: block; width: 100%; height: 100%;">
-                <div class="phone-header">
-                  <span>MUSINSA</span>
-                  <span class="highlight" style="font-size:0.8rem; font-weight:700;">★ 랭킹 1위</span>
-                </div>
-                
-                <!-- 배너 영역 -->
-                <div class="banner-container" id="musinsa-banner-bg" style="background-image: url('./src/assets/generated_banner.png');">
-                  <div class="banner-overlay">
-                    <span class="brand-tag" id="preview-ms-brand">ADIDAS CODER</span>
-                    <h3 class="banner-title" id="preview-ms-title">도심 속 가벼운 바람, 미니멀 린넨 컬렉션 단독 기획전</h3>
-                    <p class="banner-subtitle" id="preview-ms-subtitle">무더운 계절을 위한 통기성과 자연스러운 린넨 실루엣을 제안합니다.</p>
-                    <span class="banner-badge" id="preview-ms-badge">UP TO 30%</span>
-                  </div>
-                </div>
-                
-                <!-- 추천 피드 Mockup -->
-                <div class="bottom-feed">
-                  <h4 style="font-size:0.85rem; font-weight:700; margin-bottom:8px;">기획전 추천 상품</h4>
-                  <div class="product-grid-mock">
-                    <div class="product-card-mock">
-                      <div class="prod-img-box" id="musinsa-prod-img-1" style="background-image: url('./src/assets/generated_banner.png'); background-size:cover; background-position:center;"></div>
-                      <div class="prod-info-mock">
-                        <span class="prod-brand">ADIDAS CODER</span>
-                        <span style="color:#aaa;">린넨 셔츠 베이지</span>
-                        <span class="prod-price">62,300원 <strong style="color:var(--ms-accent); font-size:0.7rem;">30%</strong></span>
-                      </div>
-                    </div>
-                    <div class="product-card-mock">
-                      <div class="prod-img-box" style="background-image: url('https://images.unsplash.com/photo-1479064555552-3ef4979f8908?q=80&w=200&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
-                      <div class="prod-info-mock">
-                        <span class="prod-brand">ADIDAS CODER</span>
-                        <span style="color:#aaa;">린넨 셋업 팬츠</span>
-                        <span class="prod-price">76,300원 <strong style="color:var(--ms-accent); font-size:0.7rem;">30%</strong></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <!-- 서브 탭 네비게이션 -->
+          <div class="sub-nav">
+            <div class="sub-nav-item active" data-sub="sales-summary">요약</div>
+            <div class="sub-nav-item" data-sub="sales-status">매출현황</div>
+            <div class="sub-nav-item" data-sub="sales-schedule">행사일정</div>
+            <div class="sub-nav-item" data-sub="sales-info">행사정보</div>
+          </div>
+        </header>
 
-              <!-- 29CM 프리뷰 내부 구조 -->
-              <div id="preview-29cm-structure" style="display: none; width: 100%; height: 100%;">
-                <div class="phone-header">
-                  <span>29CM</span>
-                </div>
-                
-                <div class="banner-container">
-                  <!-- 29CM형 위 이미지 -->
-                  <div class="banner-img-box" id="29cm-banner-bg" style="background-image: url('./src/assets/generated_banner.png');"></div>
-                  
-                  <!-- 29CM형 아래 텍스트박스 -->
-                  <div class="banner-text-box">
-                    <span class="brand-tag" id="preview-cm-brand">ADIDAS CODER</span>
-                    <h3 class="banner-title" id="preview-cm-title">도심 속 가벼운 바람, 미니멀 린넨 컬렉션 단독 기획전</h3>
-                    <p class="banner-badge" id="preview-cm-badge">SPECIAL ORDER UP TO 30%</p>
-                    <p class="banner-subtitle" id="preview-cm-subtitle">무더운 계절을 위한 통기성과 자연스러운 린넨 실루엣을 제안합니다.</p>
-                  </div>
-                </div>
-                
-                <div class="bottom-feed">
-                  <div class="spec-desc">
-                    * 29CM 스페셜오더 기획전은 2주간 단독 특가 및 특별 혜택으로 제공되는 리미티드 딜 서비스입니다.
-                  </div>
-                </div>
-              </div>
-              
+        <div id="sales-summary" class="sub-tab-content active">
+          <div class="kpi-grid">
+            <div class="card glass-card kpi-card">
+              <span class="label">일간 총 매출</span>
+              <span class="value">$12,450</span>
+              <span class="trend up">+14.5% vs 어제</span>
+            </div>
+            <div class="card glass-card kpi-card">
+              <span class="label">주간 누적 주문건수</span>
+              <span class="value">1,204</span>
+              <span class="trend up">+5.2% vs 지난주</span>
+            </div>
+            <div class="card glass-card kpi-card">
+              <span class="label">활성 프로모션 수</span>
+              <span class="value">3</span>
+              <span class="trend neutral">유지</span>
+            </div>
+            <div class="card glass-card kpi-card">
+              <span class="label">평균 객단가</span>
+              <span class="value">$84.2</span>
+              <span class="trend down">-2.1% vs 어제</span>
             </div>
           </div>
-        </section>
+        </div>
+
+        <div id="sales-status" class="sub-tab-content">
+          <div class="card glass-card">
+            <div class="card-title">플랫폼별 주간 매출 추이</div>
+            <div style="height: 300px; width: 100%; display: flex; align-items: center; justify-content: center; color: #888;">
+              (Claude Code가 파이썬 백엔드를 연동하면 여기에 Chart.js 실제 매출 데이터가 그려집니다)
+            </div>
+          </div>
+        </div>
+
+        <div id="sales-schedule" class="sub-tab-content">
+          <div class="card glass-card">
+            <div class="card-title">📅 프로모션 캘린더 (진행 중 / 예정)</div>
+            <ul class="ranking-list">
+              <li><strong style="color:var(--ms-accent)">[무신사]</strong> 여름 린넨 셋업 한정특가 (06.09 ~ 06.15)</li>
+              <li><strong style="color:var(--cm-accent)">[29CM]</strong> 스페셜 오더 - 미니멀 아우터 기획전 (06.12 ~ 06.26)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="sales-info" class="sub-tab-content">
+          <div class="dashboard-grid">
+            <div class="card glass-card">
+              <div class="card-title">여름 린넨 셋업 한정특가 상세</div>
+              <p style="color:#aaa; font-size:0.9rem; line-height:1.5;">플랫폼: 무신사<br>참여상품: 12종<br>마진분담: 브랜드 50% / 무신사 50%<br>목표매출: 5,000만원</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 탭 3: 마진 & 배너 시뮬레이터 ================= -->
+      <div id="tab-simulator" class="tab-content" style="padding:0;">
+        <div style="display:flex; width:100%; height:100%;">
+          
+          <!-- 왼쪽 입력 패널 -->
+          <section class="workspace-panel">
+            <div class="panel-header">
+              <h2>마진 및 프로모션 시뮬레이션</h2>
+              <p>상품 가격 구조와 플랫폼별 프로모션 할인율에 따른 마진 변화를 실시간으로 예측합니다.</p>
+            </div>
+
+            <!-- 플랫폼 선택기 -->
+            <div class="platform-selector">
+              <button class="platform-btn active" data-platform="musinsa">
+                <span>무신사 (MUSINSA)</span>
+              </button>
+              <button class="platform-btn" data-platform="29cm">
+                <span>29CM (이십구센티미터)</span>
+              </button>
+            </div>
+
+            <!-- 기본 상품 정보 입력 -->
+            <div class="card glass-card">
+              <div class="card-title">기본 상품 정보</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="prod-brand">브랜드명</label>
+                  <input type="text" id="prod-brand" value="ADIDAS CODER">
+                </div>
+                <div class="form-group">
+                  <label for="prod-name">상품명</label>
+                  <input type="text" id="prod-name" value="미니멀 린넨 셋업 셔츠">
+                </div>
+                <div class="form-group">
+                  <label for="retail-price">소비자가 (정가)</label>
+                  <input type="number" id="retail-price" value="89000" min="0" step="1000">
+                </div>
+                <div class="form-group">
+                  <label for="cost-price">제조원가 (원단/공임)</label>
+                  <input type="number" id="cost-price" value="26000" min="0" step="100">
+                </div>
+              </div>
+            </div>
+
+            <!-- 기본 수수료 및 자체 할인 -->
+            <div class="card glass-card">
+              <div class="card-title">기본 수수료 및 자체 할인</div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="direct-discount">브랜드 자체 판매 할인율</label>
+                  <span class="slider-val" id="direct-discount-val">10%</span>
+                </div>
+                <input type="range" id="direct-discount" min="0" max="80" value="10">
+              </div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="comm-rate">플랫폼 기본 수수료율 (VAT 포함)</label>
+                  <span class="slider-val" id="comm-rate-val">28%</span>
+                </div>
+                <input type="range" id="comm-rate" min="10" max="45" value="28">
+              </div>
+            </div>
+
+            <div class="card glass-card">
+              <div class="card-title">기획전 배너 프리뷰 설정 (우측 연동)</div>
+              <div class="form-grid">
+                <div class="form-group full-width">
+                  <label for="sim-title">메인 타이틀 (기획전명)</label>
+                  <input type="text" id="sim-title" value="도심 속 가벼운 바람, 미니멀 린넨 컬렉션">
+                </div>
+              </div>
+              <button id="btn-generate-image" class="ai-btn" style="width: 100%; margin-top: 1rem;">
+                <span>AI 기획전 배너 화보 생성하기</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 오른쪽 프리뷰 패널 -->
+          <section class="preview-panel">
+            <div class="report-grid" style="width:100%;">
+              <div class="report-card">
+                <span class="label">최종 판매가</span>
+                <span class="value" id="res-selling-price">80,100 원</span>
+              </div>
+              <div class="report-card accent">
+                <span class="label">정산 금액</span>
+                <span class="value" id="res-settlement-price">54,230 원</span>
+              </div>
+              <div class="report-card">
+                <span class="label">순마진액</span>
+                <span class="value" id="res-net-margin">28,230 원</span>
+              </div>
+              <div class="report-card">
+                <span class="label">마진율</span>
+                <span class="value" id="res-margin-rate">35.2 %</span>
+              </div>
+            </div>
+
+            <!-- 아이폰 Mockup 프레임 -->
+            <div class="phone-mockup" style="margin-top:20px;">
+              <div class="dynamic-island"></div>
+              
+              <!-- 폰 스크린 -->
+              <div class="phone-screen theme-musinsa" id="phone-screen-target">
+                <!-- 무신사 프리뷰 내부 구조 -->
+                <div id="preview-musinsa-structure" style="display: block; width: 100%; height: 100%;">
+                  <div class="phone-header">
+                    <span>MUSINSA</span>
+                    <span class="highlight" style="font-size:0.8rem; font-weight:700;">★ 랭킹 1위</span>
+                  </div>
+                  
+                  <div class="banner-container" id="musinsa-banner-bg" style="background-image: url('./src/assets/generated_banner.png');">
+                    <div class="banner-overlay">
+                      <span class="brand-tag" id="preview-ms-brand">ADIDAS CODER</span>
+                      <h3 class="banner-title" id="preview-ms-title">도심 속 가벼운 바람, 미니멀 린넨 컬렉션</h3>
+                      <p class="banner-subtitle" id="preview-ms-subtitle">여름을 위한 통기성과 자연스러운 실루엣</p>
+                      <span class="banner-badge" id="preview-ms-badge">UP TO 30%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 29CM 프리뷰 내부 구조 -->
+                <div id="preview-29cm-structure" style="display: none; width: 100%; height: 100%;">
+                  <div class="phone-header">
+                    <span>29CM</span>
+                  </div>
+                  <div class="banner-container">
+                    <div class="banner-img-box" id="29cm-banner-bg" style="background-image: url('./src/assets/generated_banner.png');"></div>
+                    <div class="banner-text-box">
+                      <span class="brand-tag" id="preview-cm-brand">ADIDAS CODER</span>
+                      <h3 class="banner-title" id="preview-cm-title">도심 속 가벼운 바람, 미니멀 린넨 컬렉션</h3>
+                      <p class="banner-badge" id="preview-cm-badge">SPECIAL ORDER</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
       </div>
 
     </main>
