@@ -82,16 +82,17 @@ async function connectToBackend() {
     console.error("모니터링 API 호출 실패", e);
   }
 
-  // 2. 세일즈 데이터
+  // 2. 세일즈 데이터 (실데이터 연동)
   try {
-    const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-md-simulator/main/data/json/sales.json?_t=' + Date.now());
+    const res = await fetch('https://raw.githubusercontent.com/adidas2062-coder/fashion-md-simulator/main/data/json/sales_real.json?_t=' + Date.now());
     if (res.ok) {
       const json = await res.json();
-      const sum = json.data.summary;
+      window.salesData = json.data;
       
-      // KPI 업데이트
+      const sum = json.data.total;
       const fmt = (n) => Number(n).toLocaleString('ko-KR');
       
+      // KPI 업데이트
       const elRev = document.getElementById('kpi-revenue');
       const elRevTrend = document.getElementById('kpi-revenue-trend');
       const elOrders = document.getElementById('kpi-orders');
@@ -103,65 +104,102 @@ async function connectToBackend() {
         elRevTrend.className = `trend ${sum.revenue_change_pct > 0 ? 'up' : 'down'}`;
       }
       if(elOrders) elOrders.textContent = `${fmt(sum.today_orders)}`;
-      if(elAov) elAov.textContent = `₩${fmt(sum.avg_order_value)}`;
-      
-      // 매출 상세 테이블 (최근 14일 역순)
-      const tableBody = document.querySelector('#sales-detail-table tbody');
-      if (tableBody && json.data.daily) {
-        tableBody.innerHTML = '';
-        const recentRows = [...json.data.daily].slice(-14).reverse();
-        recentRows.forEach(row => {
-          tableBody.innerHTML += `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-              <td style="padding: 10px;">${row.date}</td>
-              <td style="padding: 10px; font-weight:600; color:#fff;">₩${fmt(row.revenue)}</td>
-              <td style="padding: 10px;">${fmt(row.orders)}건</td>
-              <td style="padding: 10px;">₩${fmt(row.avg_order_value)}</td>
-              <td style="padding: 10px; color:${row.return_rate > 5 ? '#f87171' : '#34d399'};">${row.return_rate}%</td>
-            </tr>
-          `;
-        });
-      }
-      
-      // 매출 현황 차트 렌더링
-      const ctx = document.getElementById('salesChart');
-      if (ctx && json.data.daily) {
-        const dailyData = json.data.daily.slice(-14); // 최근 14일
-        const labels = dailyData.map(d => d.date.substring(5)); // MM-DD
-        const revenues = dailyData.map(d => d.revenue);
+      if(elAov) elAov.textContent = `₩${fmt(Math.round(sum.today_revenue / (sum.today_orders || 1)))}`;
+
+      // 차트 객체 저장용
+      window.salesChartInstance = null;
+
+      window.renderSales = function(brandKey) {
+        const d = window.salesData;
+        const labels = d.dates.slice(-14).map(x => x.substring(5));
         
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: '일별 매출(원)',
-              data: revenues,
-              borderColor: '#10b981',
-              backgroundColor: 'rgba(16, 185, 129, 0.1)',
-              tension: 0.4,
-              borderWidth: 2,
-              fill: true
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { labels: { color: '#9ca3af' } }
-            },
-            scales: {
-              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
-              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } }
+        let ds = [];
+        let rows = [];
+        
+        if(brandKey === 'total') {
+            ds = [{
+                label: '총 매출(원)',
+                data: d.total.daily_revenue.slice(-14),
+                borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                tension: 0.4, borderWidth: 2, fill: true
+            }];
+            for(let i=0; i<14; i++) {
+                const idx = d.dates.length - 14 + i;
+                const m_c = d.connect.musinsa_revenue[idx] + d.edinburgh.musinsa_revenue[idx];
+                const c_c = d.connect.cm29_revenue[idx] + d.edinburgh.cm29_revenue[idx];
+                const g_c = d.connect.global_revenue[idx] + d.edinburgh.global_revenue[idx];
+                rows.push({ date: d.dates[idx], tot: d.total.daily_revenue[idx], m: m_c, c: c_c, g: g_c });
             }
-          }
+        } else {
+            const b = d[brandKey];
+            ds = [
+                { label: '무신사', data: b.musinsa_revenue.slice(-14), borderColor: '#3b82f6', backgroundColor: '#3b82f6' },
+                { label: '29CM', data: b.cm29_revenue.slice(-14), borderColor: '#f43f5e', backgroundColor: '#f43f5e' },
+                { label: '글로벌', data: b.global_revenue.slice(-14), borderColor: '#8b5cf6', backgroundColor: '#8b5cf6' }
+            ];
+            for(let i=0; i<14; i++) {
+                const idx = d.dates.length - 14 + i;
+                const m = b.musinsa_revenue[idx];
+                const c = b.cm29_revenue[idx];
+                const g = b.global_revenue[idx];
+                rows.push({ date: d.dates[idx], tot: m+c+g, m: m, c: c, g: g });
+            }
+        }
+        
+        // 차트 업데이트
+        const ctx = document.getElementById('salesChart');
+        if(window.salesChartInstance) window.salesChartInstance.destroy();
+        window.salesChartInstance = new Chart(ctx, {
+            type: brandKey === 'total' ? 'line' : 'bar',
+            data: { labels: labels, datasets: ds },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' }, stacked: brandKey !== 'total' },
+                    x: { grid: { display: false }, ticks: { color: '#9ca3af' }, stacked: brandKey !== 'total' }
+                },
+                plugins: { legend: { labels: { color: '#e5e7eb' } } }
+            }
         });
+        
+        // 테이블 업데이트
+        const tbody = document.querySelector('#sales-detail-table tbody');
+        if (tbody) {
+            tbody.innerHTML = '';
+            rows.reverse().forEach(r => {
+                tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <td style="padding: 10px;">${r.date}</td>
+                  <td style="padding: 10px; font-weight:600; color:#fff;">₩${fmt(r.tot)}</td>
+                  <td style="padding: 10px;">₩${fmt(r.m)}</td>
+                  <td style="padding: 10px;">₩${fmt(r.c)}</td>
+                  <td style="padding: 10px;">₩${fmt(r.g)}</td>
+                </tr>`;
+            });
+        }
       }
 
-      console.log("✅ 세일즈 데이터 바인딩 완료");
+      window.renderSales('total');
+      
+      // 탭 이벤트 연동
+      document.querySelectorAll('.brand-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+              document.querySelectorAll('.brand-btn').forEach(b => {
+                  b.classList.remove('active');
+                  b.style.background = 'transparent';
+                  b.style.color = '#9ca3af';
+              });
+              e.target.classList.add('active');
+              e.target.style.background = 'rgba(255,255,255,0.1)';
+              e.target.style.color = 'white';
+              window.renderSales(e.target.dataset.brand);
+          });
+      });
+      
     }
   } catch (e) {
-    console.warn("세일즈 API 호출 실패", e);
+    console.error("세일즈 API 호출 실패", e);
   }
 
   // 3. 기획전(이벤트) 데이터

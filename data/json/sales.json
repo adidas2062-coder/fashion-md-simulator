@@ -1,21 +1,14 @@
 {
   "ok": true,
-  "updated_at": "2026-06-09T16:47:20.170117+09:00",
+  "updated_at": "2026-06-10T09:22:37.968937+09:00",
   "data": {
     "summary": {
-      "today_revenue": 5480017,
-      "today_orders": 62,
-      "revenue_change_pct": -11.6,
-      "avg_order_value": 88387
+      "today_revenue": 4770523,
+      "today_orders": 48,
+      "revenue_change_pct": -12.9,
+      "avg_order_value": 99386
     },
     "daily": [
-      {
-        "date": "2026-05-27",
-        "revenue": 3448852,
-        "orders": 49,
-        "avg_order_value": 70385,
-        "return_rate": 7.3
-      },
       {
         "date": "2026-05-28",
         "revenue": 4937360,
@@ -106,6 +99,13 @@
         "orders": 62,
         "avg_order_value": 88387,
         "return_rate": 6.2
+      },
+      {
+        "date": "2026-06-10",
+        "revenue": 4770523,
+        "orders": 48,
+        "avg_order_value": 99386,
+        "return_rate": 7.2
       }
     ],
     "weekly": [
