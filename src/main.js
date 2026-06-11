@@ -1,13 +1,13 @@
 // import { calculateMusinsa, calculate29CM } from './utils/calculator.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initNavigation();
-  initSubNavigation();
-  initCalculator();
-  initMockChart();
+  try { initNavigation(); } catch (e) { console.error("Navigation Init Failed:", e); }
+  try { initSubNavigation(); } catch (e) { console.error("SubNavigation Init Failed:", e); }
+  try { initCalculator(); } catch (e) { console.error("Calculator Init Failed:", e); }
+  try { initMockChart(); } catch (e) { console.error("MockChart Init Failed:", e); }
   
   // 클로드코드가 띄울 FastAPI 백엔드 연동 시작
-  connectToBackend();
+  try { connectToBackend(); } catch (e) { console.error("Backend Connection Failed:", e); }
 });
 
 // --- API Integration (Claude Code Backend) ---
@@ -611,91 +611,95 @@ function initCalculator() {
     elements.kpiMarginRate.style.color = avgMarginRate < 0 ? '#f87171' : '#10b981';
     elements.kpiProfit.style.color = totalProfit < 0 ? '#f87171' : '#10b981';
 
-    // Update Margin Chart
-    const ctxMargin = document.getElementById('bulkMarginChart');
-    if (ctxMargin) {
-      if (window.bulkMarginChartInstance) window.bulkMarginChartInstance.destroy();
-      window.bulkMarginChartInstance = new Chart(ctxMargin, {
-        type: 'bar',
-        data: {
-          labels: chartLabels,
-          datasets: [{
-            label: '마진율 (%)',
-            data: chartMargins,
-            backgroundColor: chartColors,
-            borderRadius: 4
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
+    if (typeof Chart !== 'undefined') {
+      // Update Margin Chart
+      const ctxMargin = document.getElementById('bulkMarginChart');
+      if (ctxMargin) {
+        if (window.bulkMarginChartInstance) window.bulkMarginChartInstance.destroy();
+        window.bulkMarginChartInstance = new Chart(ctxMargin, {
+          type: 'bar',
+          data: {
+            labels: chartLabels,
+            datasets: [{
+              label: '마진율 (%)',
+              data: chartMargins,
+              backgroundColor: chartColors,
+              borderRadius: 4
+            }]
           },
-          scales: {
-            x: { 
-              grid: { color: 'rgba(255,255,255,0.04)' },
-              ticks: { color: '#888', font: { size: 9 } }
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
             },
-            y: {
-              grid: { display: false },
-              ticks: { color: '#ccc', font: { size: 9 } }
+            scales: {
+              x: { 
+                grid: { color: 'rgba(255,255,255,0.04)' },
+                ticks: { color: '#888', font: { size: 9 } }
+              },
+              y: {
+                grid: { display: false },
+                ticks: { color: '#ccc', font: { size: 9 } }
+              }
             }
           }
-        }
-      });
-    }
+        });
+      }
 
-    // Update Cost Breakdown Chart
-    const ctxCost = document.getElementById('bulkCostBreakdownChart');
-    if (ctxCost) {
-      if (window.bulkCostBreakdownChartInstance) window.bulkCostBreakdownChartInstance.destroy();
-      
-      const totalSlices = sumCostNet + sumCommissionFeeNet + sumCouponShareNet + sumShippingPkgNet + sumVat + sumNetProfit;
-      const getPct = (val) => totalSlices > 0 ? (val / totalSlices * 100).toFixed(1) + '%' : '0%';
+      // Update Cost Breakdown Chart
+      const ctxCost = document.getElementById('bulkCostBreakdownChart');
+      if (ctxCost) {
+        if (window.bulkCostBreakdownChartInstance) window.bulkCostBreakdownChartInstance.destroy();
+        
+        const totalSlices = sumCostNet + sumCommissionFeeNet + sumCouponShareNet + sumShippingPkgNet + sumVat + sumNetProfit;
+        const getPct = (val) => totalSlices > 0 ? (val / totalSlices * 100).toFixed(1) + '%' : '0%';
 
-      window.bulkCostBreakdownChartInstance = new Chart(ctxCost, {
-        type: 'doughnut',
-        data: {
-          labels: ['제조원가(세전)', '유통수수료', '쿠폰분담금', '배송/기타비용', '부가세(10%)', '브랜드 순이익'],
-          datasets: [{
-            data: [
-              Math.max(0, sumCostNet),
-              Math.max(0, sumCommissionFeeNet),
-              Math.max(0, sumCouponShareNet),
-              Math.max(0, sumShippingPkgNet),
-              Math.max(0, sumVat),
-              Math.max(0, sumNetProfit)
-            ],
-            backgroundColor: ['#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6', '#6b7280', '#10b981'],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'right',
-              labels: {
-                color: '#aaa',
-                boxWidth: 8,
-                font: { size: 8 }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const val = context.raw;
-                  return `${context.label}: ₩${fmt(val)} (${getPct(val)})`;
+        window.bulkCostBreakdownChartInstance = new Chart(ctxCost, {
+          type: 'doughnut',
+          data: {
+            labels: ['제조원가(세전)', '유통수수료', '쿠폰분담금', '배송/기타비용', '부가세(10%)', '브랜드 순이익'],
+            datasets: [{
+              data: [
+                Math.max(0, sumCostNet),
+                Math.max(0, sumCommissionFeeNet),
+                Math.max(0, sumCouponShareNet),
+                Math.max(0, sumShippingPkgNet),
+                Math.max(0, sumVat),
+                Math.max(0, sumNetProfit)
+              ],
+              backgroundColor: ['#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6', '#6b7280', '#10b981'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: {
+                  color: '#aaa',
+                  boxWidth: 8,
+                  font: { size: 8 }
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const val = context.raw;
+                    return `${context.label}: ₩${fmt(val)} (${getPct(val)})`;
+                  }
                 }
               }
-            }
-          },
-          cutout: '65%'
-        }
-      });
+            },
+            cutout: '65%'
+          }
+        });
+      }
+    } else {
+      console.warn("Chart.js is not defined. Skipping chart rendering.");
     }
   }
 
@@ -709,37 +713,41 @@ function initMockChart() {
   const ctx = document.getElementById('trendChartMock');
   if (!ctx) return;
   
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      datasets: [
-        {
-          label: '린넨 셔츠',
-          data: [40, 50, 45, 60, 75, 80, 95],
-          borderColor: '#3b82f6',
-          tension: 0.4,
-          borderWidth: 2,
-        },
-        {
-          label: '바람막이',
-          data: [80, 70, 65, 55, 45, 40, 35],
-          borderColor: '#10b981',
-          tension: 0.4,
-          borderWidth: 2,
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: '#9ca3af' } }
+  if (typeof Chart !== 'undefined') {
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [
+          {
+            label: '린넨 셔츠',
+            data: [40, 50, 45, 60, 75, 80, 95],
+            borderColor: '#3b82f6',
+            tension: 0.4,
+            borderWidth: 2,
+          },
+          {
+            label: '바람막이',
+            data: [80, 70, 65, 55, 45, 40, 35],
+            borderColor: '#10b981',
+            tension: 0.4,
+            borderWidth: 2,
+          }
+        ]
       },
-      scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
-        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#9ca3af' } }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } }
+        }
       }
-    }
-  });
+    });
+  } else {
+    console.warn("Chart.js is not defined. Skipping mock chart rendering.");
+  }
 }
