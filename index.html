@@ -200,143 +200,188 @@
       <div id="tab-simulator" class="tab-content" style="padding:0;">
         <div style="display:flex; width:100%; height:100%;">
           
-          <!-- 왼쪽 입력 패널 -->
-          <section class="workspace-panel">
-            <div class="panel-header">
-              <h2>마진 및 프로모션 시뮬레이션</h2>
-              <p>상품 가격 구조와 플랫폼별 프로모션 할인율에 따른 마진 변화를 실시간으로 예측합니다.</p>
+          <!-- 왼쪽 설정 패널 (Workspace Panel) -->
+          <section class="workspace-panel" style="width: 35%; padding: 1.5rem; border-right: 1px solid var(--border-color); overflow-y: auto; box-sizing: border-box;">
+            <div class="panel-header" style="margin-bottom: 1.2rem;">
+              <h2 style="font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:0.4rem; font-family:'Outfit', sans-serif;">MD 대량 마진 & 프로모션 시뮬레이터</h2>
+              <p style="font-size:0.8rem; color:#aaa; line-height: 1.4;">기획전 행사 스펙을 정하고 전체 등록 상품의 가격과 세전 예상 마진을 대량으로 시뮬레이션 및 관리합니다.</p>
             </div>
 
-            <!-- 플랫폼 선택기 -->
-            <div class="platform-selector">
-              <button class="platform-btn active" data-platform="musinsa">
-                <span>무신사 (MUSINSA)</span>
-              </button>
-              <button class="platform-btn" data-platform="29cm">
-                <span>29CM (이십구센티미터)</span>
-              </button>
-            </div>
-
-            <!-- 기본 상품 정보 입력 -->
-            <div class="card glass-card">
-              <div class="card-title">기본 상품 정보</div>
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="prod-brand">브랜드명</label>
-                  <input type="text" id="prod-brand" value="ADIDAS CODER">
-                </div>
-                <div class="form-group">
-                  <label for="prod-name">상품명</label>
-                  <input type="text" id="prod-name" value="미니멀 린넨 셋업 셔츠">
-                </div>
-                <div class="form-group">
-                  <label for="retail-price">소비자가 (정가)</label>
-                  <input type="number" id="retail-price" value="89000" min="0" step="1000">
-                </div>
-                <div class="form-group">
-                  <label for="cost-price">제조원가 (원단/공임)</label>
-                  <input type="number" id="cost-price" value="26000" min="0" step="100">
-                </div>
+            <!-- 기획전/행사 선택 프리셋 -->
+            <div class="card glass-card" style="margin-bottom: 1rem; padding: 1rem;">
+              <div class="card-title" style="font-size:0.9rem; margin-bottom: 0.8rem; font-weight: 600; color: #fff;">행사/기획전 선택</div>
+              <div class="form-group" style="margin-bottom:0;">
+                <select id="sim-event-select" style="width:100%; background:rgba(10,12,16,0.7); color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:10px; font-size:0.85rem; outline:none; font-family:'Inter', sans-serif; cursor:pointer;">
+                  <option value="regular">상시 판매 (기본 유통수수료 적용)</option>
+                  <option value="mujinjang">무신사 무진장 세일 (역시즌 특가)</option>
+                  <option value="29cm_special">29CM 이구위크 (스페셜 오더)</option>
+                  <option value="d2c_fest">자사몰(D2C) 패션위크 프로모션</option>
+                </select>
               </div>
             </div>
 
-            <!-- 기본 수수료 및 자체 할인 -->
-            <div class="card glass-card">
-              <div class="card-title">기본 수수료 및 자체 할인</div>
-              <div class="slider-group">
-                <div class="slider-header">
-                  <label for="direct-discount">브랜드 자체 판매 할인율</label>
-                  <span class="slider-val" id="direct-discount-val">10%</span>
+            <!-- 대량 일괄 마진 설정 -->
+            <div class="card glass-card" style="margin-bottom: 1rem; padding: 1rem;">
+              <div class="card-title" style="font-size:0.9rem; margin-bottom: 1rem; font-weight: 600; color: #fff;">대량 일괄 판매 조건 설정</div>
+              
+              <div class="slider-group" style="margin-bottom: 1rem;">
+                <div class="slider-header" style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.8rem;">
+                  <label for="bulk-brand-discount" style="color:#aaa;">브랜드 자체 할인율</label>
+                  <span class="slider-val" id="bulk-brand-discount-val" style="color:#10b981; font-weight:600;">10%</span>
                 </div>
-                <input type="range" id="direct-discount" min="0" max="80" value="10">
+                <input type="range" id="bulk-brand-discount" min="0" max="80" value="10" style="width:100%; cursor:pointer;">
               </div>
-              <div class="slider-group">
-                <div class="slider-header">
-                  <label for="comm-rate">플랫폼 기본 수수료율 (VAT 포함)</label>
-                  <span class="slider-val" id="comm-rate-val">28%</span>
+
+              <div class="slider-group" style="margin-bottom: 1rem;">
+                <div class="slider-header" style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.8rem;">
+                  <label for="bulk-extra-discount" style="color:#aaa;">행사 추가 세일율</label>
+                  <span class="slider-val" id="bulk-extra-discount-val" style="color:#10b981; font-weight:600;">5%</span>
                 </div>
-                <input type="range" id="comm-rate" min="10" max="45" value="28">
+                <input type="range" id="bulk-extra-discount" min="0" max="50" value="5" style="width:100%; cursor:pointer;">
+              </div>
+
+              <div class="slider-group" style="margin-bottom: 1rem;">
+                <div class="slider-header" style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.8rem;">
+                  <label for="bulk-coupon-rate" style="color:#aaa;">쿠폰 할인율 (플랫폼/기본)</label>
+                  <span class="slider-val" id="bulk-coupon-rate-val" style="color:#10b981; font-weight:600;">10%</span>
+                </div>
+                <input type="range" id="bulk-coupon-rate" min="0" max="30" value="10" style="width:100%; cursor:pointer;">
+              </div>
+
+              <div class="slider-group" style="margin-bottom: 1.2rem;">
+                <div class="slider-header" style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.8rem;">
+                  <label for="bulk-brand-share" style="color:#aaa;">쿠폰 브랜드 분담 비율</label>
+                  <span class="slider-val" id="bulk-brand-share-val" style="color:#10b981; font-weight:600;">50%</span>
+                </div>
+                <input type="range" id="bulk-brand-share" min="0" max="100" value="50" style="width:100%; cursor:pointer;">
+              </div>
+
+              <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom: 1rem;">
+                <div class="form-group" style="display:flex; flex-direction:column; margin-bottom:0;">
+                  <label for="bulk-shipping-cost" style="font-size:0.75rem; color:#aaa; margin-bottom:4px; font-weight:500;">일괄 배송비 (원)</label>
+                  <input type="number" id="bulk-shipping-cost" value="3000" min="0" step="500" style="background:rgba(10,12,16,0.6); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px; color:#fff; font-size:0.8rem; outline:none;">
+                </div>
+                <div class="form-group" style="display:flex; flex-direction:column; margin-bottom:0;">
+                  <label for="bulk-packaging-cost" style="font-size:0.75rem; color:#aaa; margin-bottom:4px; font-weight:500;">일괄 포장/기타 (원)</label>
+                  <input type="number" id="bulk-packaging-cost" value="500" min="0" step="100" style="background:rgba(10,12,16,0.6); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px; color:#fff; font-size:0.8rem; outline:none;">
+                </div>
+              </div>
+
+              <div class="form-group" style="display:flex; flex-direction:column; margin-bottom: 0;">
+                <label for="bulk-target-qty" style="font-size:0.8rem; color:#aaa; margin-bottom:4px; font-weight:500;">예상 판매수량 (전체 상품당/개)</label>
+                <input type="number" id="bulk-target-qty" value="100" min="1" step="10" style="background:rgba(10,12,16,0.6); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:8px; color:#fff; font-size:0.85rem; outline:none;">
               </div>
             </div>
 
-            <div class="card glass-card">
-              <div class="card-title">기획전 배너 프리뷰 설정 (우측 연동)</div>
-              <div class="form-grid">
-                <div class="form-group full-width">
-                  <label for="sim-title">메인 타이틀 (기획전명)</label>
-                  <input type="text" id="sim-title" value="도심 속 가벼운 바람, 미니멀 린넨 컬렉션">
+            <!-- 유통수수료 미세 조정 -->
+            <div class="card glass-card" style="margin-bottom: 0; padding: 1rem;">
+              <div class="card-title" style="font-size:0.9rem; margin-bottom: 0.8rem; font-weight: 600; color: #fff;">채널별 기본 수수료율 설정 (%)</div>
+              <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                <div class="form-group" style="display:flex; flex-direction:column; margin-bottom:0;">
+                  <label for="fee-musinsa" style="font-size:0.7rem; color:#aaa; margin-bottom:4px; text-align:center;">무신사 수수료</label>
+                  <input type="number" id="fee-musinsa" value="28" min="0" max="50" style="background:rgba(10,12,16,0.6); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px; color:#fff; font-size:0.8rem; text-align:center; outline:none;">
+                </div>
+                <div class="form-group" style="display:flex; flex-direction:column; margin-bottom:0;">
+                  <label for="fee-cm29" style="font-size:0.7rem; color:#aaa; margin-bottom:4px; text-align:center;">29CM 수수료</label>
+                  <input type="number" id="fee-cm29" value="30" min="0" max="50" style="background:rgba(10,12,16,0.6); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px; color:#fff; font-size:0.8rem; text-align:center; outline:none;">
+                </div>
+                <div class="form-group" style="display:flex; flex-direction:column; margin-bottom:0;">
+                  <label for="fee-d2c" style="font-size:0.7rem; color:#aaa; margin-bottom:4px; text-align:center;">자사몰(D2C)</label>
+                  <input type="number" id="fee-d2c" value="3.5" min="0" max="20" step="0.1" style="background:rgba(10,12,16,0.6); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px; color:#fff; font-size:0.8rem; text-align:center; outline:none;">
                 </div>
               </div>
-              <button id="btn-generate-image" class="ai-btn" style="width: 100%; margin-top: 1rem;">
-                <span>AI 기획전 배너 화보 생성하기</span>
-              </button>
             </div>
           </section>
 
-          <!-- 오른쪽 프리뷰 패널 -->
-          <section class="preview-panel">
-            <div class="report-grid" style="width:100%;">
-              <div class="report-card">
-                <span class="label">최종 판매가</span>
-                <span class="value" id="res-selling-price">80,100 원</span>
-              </div>
-              <div class="report-card accent">
-                <span class="label">정산 금액</span>
-                <span class="value" id="res-settlement-price">54,230 원</span>
-              </div>
-              <div class="report-card">
-                <span class="label">순마진액</span>
-                <span class="value" id="res-net-margin">28,230 원</span>
-              </div>
-              <div class="report-card">
-                <span class="label">마진율</span>
-                <span class="value" id="res-margin-rate">35.2 %</span>
-              </div>
-            </div>
-
-            <!-- 아이폰 Mockup 프레임 -->
-            <div class="phone-mockup" style="margin-top:20px;">
-              <div class="dynamic-island"></div>
-              
-              <!-- 폰 스크린 -->
-              <div class="phone-screen theme-musinsa" id="phone-screen-target">
-                <!-- 무신사 프리뷰 내부 구조 -->
-                <div id="preview-musinsa-structure" style="display: block; width: 100%; height: 100%;">
-                  <div class="phone-header">
-                    <span>MUSINSA</span>
-                    <span class="highlight" style="font-size:0.8rem; font-weight:700;">★ 랭킹 1위</span>
-                  </div>
-                  
-                  <div class="banner-container" id="musinsa-banner-bg" style="background-image: url('./src/assets/generated_banner.png');">
-                    <div class="banner-overlay">
-                      <span class="brand-tag" id="preview-ms-brand">ADIDAS CODER</span>
-                      <h3 class="banner-title" id="preview-ms-title">도심 속 가벼운 바람, 미니멀 린넨 컬렉션</h3>
-                      <p class="banner-subtitle" id="preview-ms-subtitle">여름을 위한 통기성과 자연스러운 실루엣</p>
-                      <span class="banner-badge" id="preview-ms-badge">UP TO 30%</span>
-                    </div>
+          <!-- 오른쪽 프리뷰/분석 패널 (Preview Panel) -->
+          <section class="preview-panel" style="width: 65%; padding: 1.5rem; background: #08090b; display: flex; flex-direction: column; align-items: stretch; overflow-y: auto; box-sizing: border-box;">
+            
+            <!-- 상단 필터 및 요약 지표 영역 -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; flex-wrap:wrap; gap:12px;">
+              <!-- 필터 컨트롤 -->
+              <div style="display:flex; gap:12px;">
+                <!-- 브랜드 필터 -->
+                <div>
+                  <span style="font-size:0.7rem; color:#6b7280; display:block; margin-bottom:4px; font-weight:600; letter-spacing:0.05em;">BRAND FILTER</span>
+                  <div style="display:flex; gap:2px; background:rgba(255,255,255,0.03); padding:2px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
+                    <button class="filter-btn active" data-filter-brand="all" style="background:rgba(255,255,255,0.08); color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer; font-weight:600; outline:none; transition:all 0.2s;">전체</button>
+                    <button class="filter-btn" data-filter-brand="connect" style="background:transparent; color:#6b7280; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer; outline:none; transition:all 0.2s;">커넥트</button>
+                    <button class="filter-btn" data-filter-brand="edinburgh" style="background:transparent; color:#6b7280; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer; outline:none; transition:all 0.2s;">에든버러</button>
                   </div>
                 </div>
-
-                <!-- 29CM 프리뷰 내부 구조 -->
-                <div id="preview-29cm-structure" style="display: none; width: 100%; height: 100%;">
-                  <div class="phone-header">
-                    <span>29CM</span>
-                  </div>
-                  <div class="banner-container">
-                    <div class="banner-img-box" id="29cm-banner-bg" style="background-image: url('./src/assets/generated_banner.png');"></div>
-                    <div class="banner-text-box">
-                      <span class="brand-tag" id="preview-cm-brand">ADIDAS CODER</span>
-                      <h3 class="banner-title" id="preview-cm-title">도심 속 가벼운 바람, 미니멀 린넨 컬렉션</h3>
-                      <p class="banner-badge" id="preview-cm-badge">SPECIAL ORDER</p>
-                    </div>
+                <!-- 플랫폼 필터 -->
+                <div>
+                  <span style="font-size:0.7rem; color:#6b7280; display:block; margin-bottom:4px; font-weight:600; letter-spacing:0.05em;">PLATFORM FILTER</span>
+                  <div style="display:flex; gap:2px; background:rgba(255,255,255,0.03); padding:2px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
+                    <button class="filter-btn active" data-filter-platform="all" style="background:rgba(255,255,255,0.08); color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer; font-weight:600; outline:none; transition:all 0.2s;">전체비교</button>
+                    <button class="filter-btn" data-filter-platform="musinsa" style="background:transparent; color:#6b7280; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer; outline:none; transition:all 0.2s;">무신사</button>
+                    <button class="filter-btn" data-filter-platform="cm29" style="background:transparent; color:#6b7280; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer; outline:none; transition:all 0.2s;">29CM</button>
+                    <button class="filter-btn" data-filter-platform="d2c" style="background:transparent; color:#6b7280; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer; outline:none; transition:all 0.2s;">자사몰</button>
                   </div>
                 </div>
               </div>
+
+              <!-- 실시간 합산 요약 지표 (KPIs) -->
+              <div style="display:flex; gap:8px;">
+                <div style="background:rgba(16, 185, 129, 0.06); border:1px solid rgba(16, 185, 129, 0.12); border-radius:6px; padding:6px 12px; min-width:110px; text-align:right;">
+                  <span style="font-size:0.65rem; color:#10b981; display:block; font-weight:600; text-align:left; margin-bottom:2px;">총 예상 매출액</span>
+                  <span id="bulk-total-revenue" style="font-size:0.9rem; font-weight:700; color:#fff; font-family:'Outfit', sans-serif;">₩0</span>
+                </div>
+                <div style="background:rgba(59, 130, 246, 0.06); border:1px solid rgba(59, 130, 246, 0.12); border-radius:6px; padding:6px 12px; min-width:110px; text-align:right;">
+                  <span style="font-size:0.65rem; color:#3b82f6; display:block; font-weight:600; text-align:left; margin-bottom:2px;">총 예상 이익액</span>
+                  <span id="bulk-total-profit" style="font-size:0.9rem; font-weight:700; color:#fff; font-family:'Outfit', sans-serif;">₩0</span>
+                </div>
+                <div style="background:rgba(139, 92, 246, 0.06); border:1px solid rgba(139, 92, 246, 0.12); border-radius:6px; padding:6px 12px; min-width:90px; text-align:right;">
+                  <span style="font-size:0.65rem; color:#8b5cf6; display:block; font-weight:600; text-align:left; margin-bottom:2px;">평균 마진율</span>
+                  <span id="bulk-avg-margin-rate" style="font-size:0.9rem; font-weight:700; color:#fff; font-family:'Outfit', sans-serif;">0%</span>
+                </div>
+              </div>
             </div>
+
+            <!-- 대량 상품 그리드 테이블 -->
+            <div style="flex:1; min-height:200px; max-height: 280px; overflow-y:auto; background:rgba(10,12,16,0.3); border:1px solid rgba(255,255,255,0.06); border-radius:8px; margin-bottom:1.2rem; box-sizing: border-box;">
+              <table id="bulk-simulation-table" style="width:100%; border-collapse:collapse; font-size:0.75rem; text-align:left; color:#ccc; font-family:'Inter', sans-serif;">
+                <thead>
+                  <tr style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.07); position:sticky; top:0; z-index:10;">
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; border-right:1px solid rgba(255,255,255,0.03);">브랜드</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; border-right:1px solid rgba(255,255,255,0.03);">스타일넘버</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; width:22%; border-right:1px solid rgba(255,255,255,0.03);">품명</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; text-align:right; border-right:1px solid rgba(255,255,255,0.03);">정상가</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; text-align:right; border-right:1px solid rgba(255,255,255,0.03);">사후원가</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; text-align:right; border-right:1px solid rgba(255,255,255,0.03);">세일가</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; text-align:right; border-right:1px solid rgba(255,255,255,0.03);">쿠폰할인</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; text-align:right; border-right:1px solid rgba(255,255,255,0.03);">수수료(예상)</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; text-align:right; border-right:1px solid rgba(255,255,255,0.03);">이익(예상)</th>
+                    <th style="padding:10px 8px; font-weight:600; color:#fff; text-align:right;">마진율</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- JS에서 동적으로 대량 리스트 주입 -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 하단 비주얼 차트 패널 -->
+            <div style="display:flex; gap:12px; height:170px; box-sizing: border-box;">
+              <div class="card glass-card" style="flex:1.2; padding:10px; margin:0; display:flex; flex-direction:column; height:100%; box-sizing: border-box;">
+                <div style="font-size:0.75rem; font-weight:600; color:#888; margin-bottom:5px;">개별 상품 마진율(%) 비교</div>
+                <div style="flex:1; position:relative; min-height:0; width: 100%; height: 100%;">
+                  <canvas id="bulkMarginChart" style="width:100%; height:100%;"></canvas>
+                </div>
+              </div>
+              <div class="card glass-card" style="flex:0.8; padding:10px; margin:0; display:flex; flex-direction:column; height:100%; box-sizing: border-box;">
+                <div style="font-size:0.75rem; font-weight:600; color:#888; margin-bottom:5px;">포트폴리오 비용 구성 비중</div>
+                <div style="flex:1; position:relative; min-height:0; width: 100%; height: 100%;">
+                  <canvas id="bulkCostBreakdownChart" style="width:100%; height:100%;"></canvas>
+                </div>
+              </div>
+            </div>
+
           </section>
 
         </div>
       </div>
+
 
     </main>
   </div>
